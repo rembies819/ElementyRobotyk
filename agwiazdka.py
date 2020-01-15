@@ -79,7 +79,6 @@ def szukaj(start, koniec, mapa):
 
 start = (19, 0)
 koniec = (0, 19)
-koszt = 1
 mapa = np.loadtxt("grid.txt")
 droga = szukaj(start, koniec, mapa)
 for x in droga:
