@@ -35,9 +35,6 @@ def child(pozycja, mapa):
 
 
 def szukaj(start, koniec, mapa):
-    if mapa[koniec[0]][koniec[1]] == 5:
-        print("Cel jest przeszkoda")
-        return None
     g = {} # koszt dojścia od pozycji startowej do poz
     f = {}  #koszt
     g[start] = 0
