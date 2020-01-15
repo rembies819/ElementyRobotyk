@@ -12,27 +12,28 @@ ruch = [(-1, 0),  # gora
 
 # manhatan - dojscie do celu 2 prostymi liniami
 # euklidesowa - jedna prosta linia
-def heurystyka(pozycja1, pozycja2):
-    x = (pozycja1[0] - pozycja2[0]) ** 2
-    y = (pozycja1[1] - pozycja2[1]) ** 2
+def heurystyka(start, cel):
+    x = (start[0] - cel[0]) ** 2
+    y = (start[1] - cel[1]) ** 2
     return math.sqrt(x + y)
 
 
-def child(pozycja, mapa):
+def children(pozycja, mapa):
     tab = []
-    for nowa_pozycja in ruch:
-        nowax = pozycja[0] + nowa_pozycja[0]
-        noway = pozycja[1] + nowa_pozycja[1]
-        if (nowax < 0
-                or nowax > mapa.shape[0] - 1
-                or noway < 0
-                or noway > mapa.shape[1] - 1):  # sprawdzenie czy jest w granicy mapy
+    for x,y in ruch:
+        x2 = pozycja[0] + x
+        y2 = pozycja[1] + y
+        if (x2 < 0
+                or x2 > mapa.shape[0] - 1
+                or y2 < 0
+                or y2 > mapa.shape[1] - 1):  # sprawdzenie czy jest w granicy mapy
             continue
-        if mapa[nowax][noway] != 0:
+        if mapa[x2][y2] != 0:
             continue
-        tab.append((nowax, noway))
+        tab.append((x2, y2))
     return tab
-
+def koszt_ruchu(pozycja):
+    return 1
 
 def szukaj(start, koniec, mapa):
     g = {} # koszt dojścia od pozycji startowej do poz
@@ -53,23 +54,22 @@ def szukaj(start, koniec, mapa):
         # przerobiony punkt trafia do listy zamknietej
         otwarte.remove(biezacy)
         zamkniete.append(biezacy)
-        # sprawdzanie sąsiadów dla biezacego punktu
-        for sasiad in child(biezacy, mapa):
-            if sasiad in zamkniete:
-                continue
-            if sasiad not in otwarte:
-                otwarte.add(sasiad)
-            elif g[biezacy] + 1 >= g[sasiad]:
-                continue
-            g[sasiad] = g[biezacy] + 1
-            rodzic[sasiad] = biezacy
+        # sprawdzanie dzieci dla biezacego punktu
+        for child in children(biezacy, mapa):
+            if child in zamkniete:
+                continue #juz sprawdzone
+            if child not in otwarte:
+                otwarte.add(child) #nowe dziecko
+            elif g[child] <= g[biezacy] + koszt_ruchu(biezacy):
+                continue #gorszy wynik
+            g[child] = g[biezacy] + 1
+            rodzic[child] = biezacy
             #szacowanie kosztu do konca od obecnego punktu
-            szacowane = heurystyka(sasiad, koniec)
-            f[sasiad] = g[sasiad] + szacowane
+            szacowane = heurystyka(child, koniec)
+            f[child] = g[child] + szacowane
         # budowanie drogi po tablicy rodziców
         if biezacy == koniec:
-            path = []
-            path.append(biezacy)
+            path = [biezacy]
             while biezacy in rodzic:
                 biezacy = rodzic[biezacy]
                 path.append(biezacy)
@@ -84,6 +84,4 @@ mapa = np.loadtxt("grid.txt")
 droga = szukaj(start, koniec, mapa)
 for x in droga:
     mapa[x[0]][x[1]] = 3
-mapa[start[0]][start[1]] = 1
-mapa[koniec[0]][koniec[1]] = 2
 print(mapa)
