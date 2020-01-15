@@ -61,7 +61,6 @@ def szukaj(start, koniec, mapa):
                 otwarte.add(sasiad)
             elif g[biezacy] + 1 >= g[sasiad]:
                 continue
-
             g[sasiad] = g[biezacy] + 1
             rodzic[sasiad] = biezacy
             #szacowanie kosztu do konca od obecnego punktu
@@ -74,6 +73,7 @@ def szukaj(start, koniec, mapa):
             while biezacy in rodzic:
                 biezacy = rodzic[biezacy]
                 path.append(biezacy)
+            print(g[koniec]) #wyswietlanie koncowego kosztu calktowitego
             return path
 
 
