@@ -72,11 +72,11 @@ def szukaj(start, koniec, mapa):
             f[sasiad] = g[sasiad] + szacowane
         # budowanie drogi po tablicy rodziców
         if biezacy == koniec:
-            path = set()
-            path.add(biezacy)
+            path = []
+            path.append(biezacy)
             while biezacy in rodzic:
                 biezacy = rodzic[biezacy]
-                path.add(biezacy)
+                path.append(biezacy)
             return path
 
 
